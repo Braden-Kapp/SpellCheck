@@ -1,6 +1,4 @@
-const fs = require('fs');
-
-// ==================== SEQUENCE ALIGNMENT ====================
+// ================= SEQUENCE ALIGNMENT ====================
 function calculate_mismatch(char1, char2) {
     if (char1 === char2) return 0; // Complete Match
 
@@ -181,6 +179,3 @@ function mainFunc(givenWord) {
     let res = heap.return10();
     return res;
 }
-
-// Export functions if needed
-module.exports = { mainFunc, sequence_alignment, MaxHeap };
