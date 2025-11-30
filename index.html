@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Spell Checker</title>
+</head>
+<body>
+    <input type="text" id="wordInput" placeholder="Enter a word">
+    <button onclick="checkSpelling()">Check</button>
+    <div id="results"></div>
+
+    <script src="combined_spellcheck.js"></script>
+    <script>
+        // Load dictionary when page loads
+        loadDictionary().then(loaded => {
+            if (loaded) {
+                console.log('Ready to check spelling!');
+            }
+        });
+
+        function checkSpelling() {
+            const word = document.getElementById('wordInput').value;
+            const suggestions = mainFunc(word);
+            
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h3>Suggestions:</h3>' + 
+                suggestions.map(s => `<p>${s.word} (score: ${s.score})</p>`).join('');
+        }
+    </script>
+</body>
+</html>
