@@ -1,6 +1,7 @@
+// ==================== GLOBAL VARIABLES ====================
 let wordsArray = [];
 
-// ================= SEQUENCE ALIGNMENT ====================
+// ==================== SEQUENCE ALIGNMENT ====================
 function calculate_mismatch(char1, char2) {
     if (char1 === char2) return 0; // Complete Match
 
@@ -20,8 +21,6 @@ function sequence_alignment(word1, word2) {
     let cols = word2.length;
 
     // Penalties
-    let sameTypeMismatch = 1;
-    let differentTypeMismatch = 3;
     let gap = 2;
     
     // Setting up arr
@@ -95,32 +94,6 @@ class MaxHeap {
         }
     }
 
-    insert(obj) {
-        this.A.push(obj);
-        let cur = this.heapSize;
-        this.heapSize++;
-
-        while (cur > 0 && this.A[this.parent(cur)].score < this.A[cur].score) {
-            const par = this.parent(cur);
-            [this.A[cur], this.A[par]] = [this.A[par], this.A[cur]];
-            cur = par;
-        }
-    }
-
-    maximum() {
-        return this.A[0];
-    }
-
-    extractMax() {
-        if (this.heapSize === 0) return null;
-        const max = this.A[0];
-        this.A[0] = this.A[this.heapSize - 1];
-        this.heapSize--;
-        this.A.pop();
-        this.maxHeapify(0);
-        return max;
-    }
-
     heapSort() {
         const originalSize = this.heapSize;
         for (let i = this.heapSize - 1; i > 0; i--) {
@@ -131,21 +104,18 @@ class MaxHeap {
         this.heapSize = originalSize;
     }
 
-    printHeap(limit = 10) {
-        console.log(this.A.slice(0, Math.min(limit, this.heapSize)));
-    }
-
     return10() {
         const results = [];
         for (let i = 0; i < 10; i++) {
-            results.push(this.A[i]);
+            if (i < this.A.length) {
+                results.push(this.A[i]);
+            }
         }
         return results;
     }
 }
 
-// ==================== MAIN FUNCTION ====================
-// Load dictionary from file
+// ==================== DICTIONARY LOADING ====================
 async function loadDictionary() {
     try {
         const response = await fetch('dictionary.txt');
@@ -159,6 +129,7 @@ async function loadDictionary() {
     }
 }
 
+// ==================== MAIN FUNCTION ====================
 function mainFunc(givenWord) {
     if (wordsArray.length === 0) {
         console.error('Dictionary not loaded yet!');
@@ -171,7 +142,7 @@ function mainFunc(givenWord) {
             word: dictWord,
             score: sequence_alignment(givenWord, dictWord)
         }; 
-        results.push(wordObj); // store word object
+        results.push(wordObj);
     });
     
     const heap = new MaxHeap(results);
