@@ -1,11 +1,18 @@
-// ==================== GLOBAL VARIABLES ====================
+//I originally had all of these separated into different files, but i used exports and fs
+//Both of these things had trouble working in a web browser but worked fine in node.js 
+//I combined all the files to this single one so there's no export and switched fs for fetch
+
+
+// ========================================
+//This will be the dictionary, eventually, scoped globally
 let wordsArray = [];
 
-// ==================== SEQUENCE ALIGNMENT ====================
+// ========================================
+//Sequence Alignment functions
 function calculate_mismatch(char1, char2) {
     if (char1 === char2) return 0; // Complete Match
 
-    // Is it a vowel or consonant check
+    // Is it a vowel or not check
     let isVowel1 = /[aeiou]/i.test(char1); 
     let isVowel2 = /[aeiou]/i.test(char2); 
 
@@ -20,7 +27,7 @@ function sequence_alignment(word1, word2) {
     let rows = word1.length;
     let cols = word2.length;
 
-    // Penalties
+    // Gap Penalty
     let gap = 2;
     
     // Setting up arr
@@ -57,7 +64,10 @@ function sequence_alignment(word1, word2) {
     return arr[word1.length][word2.length];
 }
 
-// ==================== MAX HEAP ====================
+// ========================================
+//Max Heap Class
+//This is the same MaxHeap used in c++ for project3 exept it has been translated to js
+//It also now usese node.score when comparing due to the new way it is uesd
 class MaxHeap {
     constructor(arr = null) {
         this.A = [];
@@ -70,7 +80,7 @@ class MaxHeap {
         }
     }
 
-    parent(i) { return Math.floor((i - 1) / 2); }
+    parent(i) { return Math.floor((i - 1) / 2); } //Change from C++ have to use Math.floor(), not int div
     left(i) { return 2 * i + 1; }
     right(i) { return 2 * i + 2; }
 
@@ -79,6 +89,7 @@ class MaxHeap {
         const l = this.left(i);
         const r = this.right(i);
         
+        //Change from c++, what is being given is objs with words and score so .score is needed
         if (l < this.heapSize && this.A[l].score > this.A[largest].score) largest = l;
         if (r < this.heapSize && this.A[r].score > this.A[largest].score) largest = r;
 
@@ -103,7 +114,21 @@ class MaxHeap {
         }
         this.heapSize = originalSize;
     }
-
+    maximum() {
+        return this.A[0];
+    }
+    extractMax() {
+        if (this.heapSize === 0) return null;
+        const max = this.A[0];
+        this.A[0] = this.A[this.heapSize - 1];
+        this.heapSize--;
+        this.A.pop();
+        this.maxHeapify(0);
+        return max;
+    } 
+    printHeap(limit = 10) { //Made limit of 10 instead of printing all
+        console.log(this.A.slice(0, Math.min(limit, this.heapSize)));
+    }
     return10() {
         const results = [];
         for (let i = 0; i < 10; i++) {
@@ -115,38 +140,42 @@ class MaxHeap {
     }
 }
 
-// ==================== DICTIONARY LOADING ====================
+// =======================================
+//Function to load dictionary.txt, will be called in index.html
 async function loadDictionary() {
     try {
         const response = await fetch('dictionary.txt');
         const data = await response.text();
+        //Split dictionary into individual words in the array
         wordsArray = data.split(/\s+/).filter(word => word.length > 0);
-        console.log(`Dictionary loaded: ${wordsArray.length} words`);
+        console.log(`Dictionary loaded: ${wordsArray.length} words`); //For error checking
         return true;
     } catch (error) {
-        console.error('Error loading dictionary:', error);
+        console.error('Error loading dictionary:', error); //More error checking(this wasn't working for a while)
         return false;
     }
 }
 
-// ==================== MAIN FUNCTION ====================
+// ========================================
+//mainFunction
 function mainFunc(givenWord) {
     if (wordsArray.length === 0) {
-        console.error('Dictionary not loaded yet!');
+        //Error checking for fetching the dictionary
+        console.error('Dictionary not loaded');
         return [];
     }
     
     const results = []; // array to store word objects
-    wordsArray.forEach(dictWord => {
+    wordsArray.forEach(dictWord => { //Call sequence alignment on each word in the dictionary 
         const wordObj = {
             word: dictWord,
             score: sequence_alignment(givenWord, dictWord)
         }; 
-        results.push(wordObj);
+        results.push(wordObj);//add each word object to results
     });
     
     const heap = new MaxHeap(results);
-    heap.heapSort();
-    let res = heap.return10();
-    return res;
+    heap.heapSort(); //Sort results
+    let res = heap.return10(); //Take top 10
+    return res; //return top 10
 }
