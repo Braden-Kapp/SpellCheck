@@ -1,3 +1,5 @@
+let wordsArray = [];
+
 // ================= SEQUENCE ALIGNMENT ====================
 function calculate_mismatch(char1, char2) {
     if (char1 === char2) return 0; // Complete Match
@@ -143,8 +145,6 @@ class MaxHeap {
 }
 
 // ==================== MAIN FUNCTION ====================
-let wordsArray = [];
-
 // Load dictionary from file
 async function loadDictionary() {
     try {
