@@ -56,8 +56,8 @@ function sequence_alignment(word1, word2) {
             let mismatch = calculate_mismatch(rowChar, colChar);
             arr[i][j] = Math.min(
                 arr[i - 1][j - 1] + mismatch,   // diagonal (match/mismatch)
-                arr[i - 1][j] + gap,            // deletion
-                arr[i][j - 1] + gap             // insertion
+                arr[i - 1][j] + gap,            
+                arr[i][j - 1] + gap             
             );
         }
     }
