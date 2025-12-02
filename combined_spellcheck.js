@@ -1,7 +1,8 @@
 //I originally had all of these separated into different files, but i used exports and fs
 //Both of these things had trouble working in a web browser but worked fine in node.js 
 //I combined all the files to this single one so there's no export and switched fs for fetch
-
+//Sorry for messed up function name norms, tried to use func na_me for most but, slipt back
+//to camelcasing when I used maxHeap again
 
 // ========================================
 //This will be the dictionary, eventually, scoped globally
